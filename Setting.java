@@ -1,3 +1,5 @@
+package net.nictitate.boredBOT;
+
 class Setting {
   private String key, value;
   

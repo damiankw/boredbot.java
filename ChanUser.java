@@ -1,3 +1,5 @@
+package net.nictitate.boredBOT;
+
 /* Private Class for a Channel User: */
 public class ChanUser {
   /* Define the Variables needed: */

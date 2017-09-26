@@ -1,3 +1,5 @@
+package net.nictitate.boredBOT;
+
 public class User {
   /* Define the working Variables: */
   private String nick, user, host;

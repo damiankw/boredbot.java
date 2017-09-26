@@ -1,3 +1,5 @@
+package net.nictitate.boredBOT;
+
 //:apollo.ny.us.austnet.org 377 damibot :
 //:apollo.ny.us.austnet.org NOTICE damibot :Highest connection count: 707 (706 clients)
 //:apollo.ny.us.austnet.org 353 damibot = #Testikles` :damibot BlueWish[a] damian

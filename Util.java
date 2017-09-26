@@ -1,3 +1,5 @@
+package net.nictitate.boredBOT;
+
 public class Util {
   public static String lindex(String text, int word) {
     String txt[] = text.split(" ");

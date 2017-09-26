@@ -1,3 +1,5 @@
+package net.nictitate.boredBOT;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -21,11 +23,6 @@ public class boredBOT {
   public void send_data(String send_data) {
     sck_out.println(send_data);
     System.out.println("-> " + send_data);
-  }
-
-  /* Initialization: */
-  public static void main(String[] args){
-    new boredBOT();
   }
 
   /* Create a new socket and control it: */
@@ -54,10 +51,10 @@ public class boredBOT {
       // While the socket exists, read it:
 
       while ((read_data = sck_in.readLine()) != null) {
-        if (lindex(read_data, 0).equals("PING")) {
-          send_data("PONG " + lindex(read_data, 1));
+        if (Util.lindex(read_data, 0).equals("PING")) {
+          send_data("PONG " + Util.lindex(read_data, 1));
           
-        } else if ((lindex(read_data, 0).indexOf("!") > 0) && (lindex(read_data, 0).indexOf("@") > 0)) {
+        } else if ((Util.lindex(read_data, 0).indexOf("!") > 0) && (Util.lindex(read_data, 0).indexOf("@") > 0)) {
           // if commands are coming from a user
           svr_user(read_data);
         }
@@ -198,53 +195,6 @@ public class boredBOT {
     }
   }
 
-  public static String lindex(String text, int word) {
-    String txt[] = text.split(" ");
-
-    if (word >= txt.length) {
-      return "";
-    }
-    
-    // count the actual words (not spaces)
-    int words = 0;
-    for (int i = 0; i < txt.length; i++) {
-      if (txt[i].equals("")) {
-        continue;
-      } else if (words == word) {
-        return txt[i];
-      }
-      
-      words++;
-    }
-    
-    return "";
-  }
-  
-  public static String lrange(String text, int first, int last) {
-    String txt[] = text.split(" ");
-
-    if (first >= txt.length) {
-      return "";
-    }
-    
-    String output = "";
-    int words = 0;
-    for (int i = 0; i < txt.length; i++) {
-      if ((words >= first) && (last > 0)) {
-        output += " " + txt[i];
-        if (!txt[i].equals("")) {
-          last--;
-        }
-      } else if (txt[i].equals("")) { 
-        continue;
-      }
-      
-      words++;
-    }
-    
-    return output.trim();
-  }
-  
   public void msg(String target, String text) {
     send_data("PRIVMSG " + target + " :" + text);
   }

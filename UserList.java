@@ -1,3 +1,5 @@
+package net.nictitate.boredBOT;
+
 import java.util.*;
 
 public class UserList {
