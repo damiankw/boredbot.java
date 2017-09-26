@@ -33,9 +33,9 @@ public class Util {
     String output = "";
     int words = 0;
     for (int i = 0; i < txt.length; i++) {
-      if ((words >= first) && (last > 0)) {
+      if ((words >= first) && ((last > 0) || (last == -1))) {
         output += " " + txt[i];
-        if (!txt[i].equals("")) {
+        if ((!txt[i].equals("")) && (last != -1)) {
           last--;
         }
       } else if (txt[i].equals("")) { 

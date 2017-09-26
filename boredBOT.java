@@ -11,6 +11,7 @@ public class boredBOT {
   private BufferedReader sck_in = null;
 
   /* Set up local variables: */
+  private Config config;
   private long start;
   private long connect;
   private User bot = new User();
@@ -18,6 +19,7 @@ public class boredBOT {
   private ChanList chans = new ChanList();
   private String server = "";
   private ArrayList<Setting> settings = new ArrayList<Setting>();
+  
 
   /* Write data to the socket: */
   public void send_data(String send_data) {
@@ -25,25 +27,29 @@ public class boredBOT {
     System.out.println("-> " + send_data);
   }
 
-  /* Create a new socket and control it: */
-  public boredBOT() {
+  // create a new instance
+  public boredBOT(String nick, String user, String name, String server, int port) {
+    this.config = new Config(nick, user, name, server, port);
+  }
+
+  public void connect() {
     try {
       Date date = new Date();
       this.start = date.getTime();
       
       // Connect the socket:
       //sck_server = new Socket("irc.freenode.net", 6667);
-      sck_server = new Socket("stable.nictitate.net", 6667);
+      sck_server = new Socket(this.config.server(), this.config.port());
 
       // Set up the socket Streams:
       sck_out = new PrintWriter(sck_server.getOutputStream(), true);
       sck_in = new BufferedReader(new InputStreamReader(sck_server.getInputStream()));
 
       // Send data to server for authentication:
-      this.bot.setNick("boredbot");
+      this.bot.setNick(this.config.nick());
       System.out.println("-> SET BOTNICK: " + this.bot.nick());
-      send_data("NICK boredbot");
-      send_data("USER boredbot {} {} :I am boredBOT-j!");
+      send_data("NICK " + this.config.nick());
+      send_data("USER " + this.config.user() + " {} {} :" + this.config.name());
 
       // Set up the tmpRead to read from the server:
       String read_data;
@@ -69,96 +75,76 @@ public class boredBOT {
       System.out.println(" -> " + error.getMessage());
     }
   }
-
+  
   /* When the server sends a command: */
   public void svr_server(String read_data) {
-    ParseServ args = new ParseServ(read_data);
-    if (args.type() == 1) {
-      System.out.println("!" + args.server() + "! #" + args.numeric() + ": " + args.arg(0, args.size()));
-
-      if (args.numeric().equals("001")) {
+    System.out.println("<- " + read_data);
+    
+    if (read_data.length() == 0) {
+      return;
+    } else if (read_data.substring(0, 1).equals(":")) {
+      read_data = read_data.substring(1, read_data.length());
+      if (Util.lindex(read_data, 1).equals("001")) {
         send_data("WHO " + this.bot.nick());
         send_data("JOIN #nictitate");
-      } else if (args.numeric().equals("004")) {
-        this.server = args.arg(0);
-      
-      } else if (args.numeric().equals("005")) {
-        for (int i = 0; i < args.size(); i++) {
+        
+      } else if (Util.lindex(read_data, 1).equals("004")) {
+        this.server = Util.lindex(read_data, 3);
+        
+      } else if (Util.lindex(read_data, 1).equals("005")) {
+        for (String word : Util.lrange(read_data, 3, -1).split(" ")) {
           String setting[];
-          if (args.arg(i).indexOf("=") == -1) {
-            setting = (args.arg(i)+"=1").split("=");
+          if (word.indexOf("=") == -1) {
+            setting = (word + "=1").split("=");
           } else {
-            setting = args.arg(i).split("=");
+            setting = word.split("=");
           }
           
           this.settings.add(new Setting(setting[0], setting[1]));
         }
-        
-      } else if (args.numeric().equals("324")) {
-        Channel chan = this.chans.find(args.arg(0));
-        
-        chan.setMode(args.arg(1));
-        
+      } else if (Util.lindex(read_data, 1).equals("324")) {
+        Channel chan = this.chans.find(Util.lindex(read_data, 3));
+        chan.setMode(Util.lindex(read_data, 4));
         chans.update(chan);
 
-      } else if (args.numeric().equals("329")) {
-        Channel chan = this.chans.find(args.arg(0));
-        
-        chan.setCreated(Long.parseLong(args.arg(1)));
-        
+      } else if (Util.lindex(read_data, 1).equals("329")) {
+        Channel chan = this.chans.find(Util.lindex(read_data, 3));
+        chan.setCreated(Long.parseLong(Util.lindex(read_data, 4)));
         chans.update(chan);
 
-      } else if (args.numeric().equals("332")) {
-        Channel chan = this.chans.find(args.arg(0));
-        
-        chan.setTopic(args.arg(1, args.size()));
-        
+      } else if (Util.lindex(read_data, 1).equals("332")) {
+        Channel chan = this.chans.find(Util.lindex(read_data, 3));
+        chan.setTopic(Util.lrange(read_data, 4, -1).substring(1, Util.lrange(read_data, 4, -1).length()));
         chans.update(chan);
 
-      } else if (args.numeric().equals("333")) {
-        Channel chan = this.chans.find(args.arg(0));
-        
-        chan.setTopicBy(args.arg(1));
-        chan.setTopicWhen(Long.parseLong(args.arg(2)));
-        
+      } else if (Util.lindex(read_data, 1).equals("333")) {
+        Channel chan = this.chans.find(Util.lindex(read_data, 3));
+        chan.setTopicBy(Util.lindex(read_data, 4));
+        chan.setTopicWhen(Long.parseLong(Util.lindex(read_data, 5)));
         chans.update(chan);
 
-      } else if (args.numeric().equals("352")) {
-        // store user info: #nictitate boredbot local.damian.id.au stable.nictitate.net boredbot H 0 I am boredBOT-j!
-        if (this.users.find(args.arg(4)) == null) {
-          this.users.add(args.arg(4), args.arg(1), args.arg(2));
+      } else if (Util.lindex(read_data, 1).equals("352")) {
+        if (this.users.find(Util.lindex(read_data, 7)) == null) {
+          this.users.add(Util.lindex(read_data, 7), Util.lindex(read_data, 4), Util.lindex(read_data, 5));
         } else {
-          User user = this.users.find(args.arg(4));
-          user.setNick(args.arg(4));
-          user.setUser(args.arg(1));
-          user.setHost(args.arg(2));
+          User user = this.users.find(Util.lindex(read_data, 7));
+          user.setNick(Util.lindex(read_data, 7));
+          user.setUser(Util.lindex(read_data, 4));
+          user.setHost(Util.lindex(read_data, 5));
           this.users.update(user);
         }
         
-        if (bot.nick().equals(args.arg(1))) {
-          bot.setUser(args.arg(4));
-          bot.setHost(args.arg(2));
+        if (bot.nick().equals(Util.lindex(read_data, 7))) {
+          bot.setUser(Util.lindex(read_data, 4));
+          bot.setHost(Util.lindex(read_data, 5));
         }
       
-      } else if (args.numeric().equals("353")) {
-          // store users on channel: = #nictitate boredbot @damian
-/*          String users[] = args.arg(2).split(" ");
-          for (int i = 0; i < users.length; i++) {
-            if (this.users.find(users[i]) == null) {
-              User user = new User(users[i]);
-              this.users.add(user);
-            }
-          }
-*/          
-      
-      } else if (args.numeric().equals("433")) {
-        this.bot.setNick("boredBOT-j");
-        send_data("NICK boredBOT-j");
+      } else if (Util.lindex(read_data, 1).equals("433")) {
+        int rand = 10 + (int)(Math.random() * 99); 
+        this.bot.setNick("boredBOT-" + rand);
+        send_data("NICK boredBOT-" + rand);
 
       }
-    } else if (args.type() == 2) {
-      System.out.println("<- " + read_data);
-      
     }
   }
 
@@ -176,7 +162,7 @@ public class boredBOT {
       msg(info.target(), "uptime:[" + ((date.getTime() - this.start) / 1000) + "secs] nick:[" + bot.nick() + "] ident:[" + bot.user() + "] host:[" + bot.host() + "] server:[" + this.server + "]");
       msg(info.target(), "settings:[" + this.settings.size() + "]");
       msg(info.target(), "channels:[" + this.chans.total() + "] list:[" + this.chans.toString() + "]");
-      msg(info.target(), "users:[" + this.chans.total() + "] list:[" + this.chans.toString() + "]");
+      msg(info.target(), "users:[" + this.users.total() + "] list:[" + this.users.toString() + "]");
     
     } else if (info.text(0).equals(".chaninfo")) {
       Channel chans[] = this.chans.list();
