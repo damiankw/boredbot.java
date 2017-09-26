@@ -1,50 +1,58 @@
-/// need to make shit to UPDATE, you idiot.
-
-
 import java.util.*;
 
 public class UserList {
   /* The array to hold the list of Users: */
-  private List UserList = new ArrayList();
+  private ArrayList<User> UserList = new ArrayList<User>();
 
   /* Default Constructor: */
   public UserList() { }
 
-  /* To add a new User (without Information): */
+  // add a user by object
+  public void add(User user) {
+    this.UserList.add(user);
+  }
+
+  // add a user by string
   public void add(String nickname, String username, String hostname) {
-    this.add(nickname, username, hostname, "");
+    this.UserList.add(new User(nickname, username, hostname));
   }
-
-  /* To add a new User (with Information): */
-  public void add(String nickname, String username, String hostname, String information) {
-    if (this.find(nickname) == null) {
-      this.UserList.add(new User(nickname, username, hostname, information));
-    }
-  }
-
-  /* To remove an old User: */
+  
+  // delete a user by nickname
   public void del(String nickname) {
+    // loop through all users
     for (int i = this.UserList.size(); i > 0; i--) {
-      User tmpUser = (User) this.UserList.get(i - 1);
-      if (tmpUser.nick().equalsIgnoreCase(nickname)) {
+      // check if the user matches
+      User user = (User) this.UserList.get(i - 1);
+      if (user.nick().equalsIgnoreCase(nickname)) {
         this.UserList.remove(i - 1);
       }
     }
   }
 
-  /* To find a User: */
+  // update information in a user
+  public void update(User user) {
+    // delete the user
+    this.del(user.nick());
+    
+    // add the user back
+    this.add(user);
+  }
+  
+  // search for a user in the list by nickname
   public User find(String nickname) {
+    // loop through all users
     for (int i = 0; i < this.UserList.size(); i++) {
-      User tmpUser = (User) this.UserList.get(i);
-      if (tmpUser.nick().equalsIgnoreCase(nickname)) {
-        return tmpUser;
+      // check if the user exists
+      User user = (User) this.UserList.get(i);
+      if (user.nick().equalsIgnoreCase(nickname)) {
+        return user;
       }
     }
 
     return null;
   }
 
-  /* To list all Users as an Array: */
+  // output an array of users
   public User[] list() {
     User user[] = new User[this.UserList.size()];
     for (int i = 0; i < this.UserList.size(); i++) {
@@ -54,30 +62,18 @@ public class UserList {
     return user;
   }
 
-  /* To list all Users as a String: */
+  public int total() {
+    return this.UserList.size();
+  }
+  
+  // output all users as a string
   public String toString() {
-    String tmpReturn = "";
+    String users = "";
     for (int i = 0; i < this.UserList.size(); i++) {
-      User tmpUser = (User) this.UserList.get(i);
-      tmpReturn += " " + tmpUser.nick();
+      User user = (User) this.UserList.get(i);
+      users += " " + user.nick();
     }
 
-    return tmpReturn.substring(1, tmpReturn.length());
-  }
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////// testing /////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-  public static void main(String args[]) {
-    UserList u = new UserList();
-    u.add("damian", "west", "local.damian.id.au");
-    u.add("dbm", "dbm", "pc1.deadbodyman.net");
-    u.add("PsyfiN", "PsyFiN", "home.psyfin.net");
-
-    u.del("dbm");
-
-    System.out.println(u.find("damian").address());
+    return users.substring(1, users.length());
   }
 }

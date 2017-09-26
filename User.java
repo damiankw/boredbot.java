@@ -1,67 +1,63 @@
 public class User {
   /* Define the working Variables: */
-  private String nickname, username, hostname, information;
+  private String nick, user, host;
 
-  /* Default Container */
-  public User(String nickname, String username, String hostname) {
-    new User(nickname, username, hostname, "");
+  // create a new user
+  public User() {
+    this.nick = "";
+    this.user = "";
+    this.host = "";
+  }
+  
+  public User(String nick) {
+    this.nick = nick;
+    this.user = "";
+    this.host = "";
+  }
+  
+  public User(String nick, String user, String host) {
+    this.nick = nick;
+    this.user = user;
+    this.host = host;
   }
 
-  /* Default Container */
-  public User(String nickname, String username, String hostname, String information) {
-    this.nickname = nickname;
-    this.username = username;
-    this.hostname = hostname;
-    this.information = information;
+  // update nickname
+  public void setNick(String nick) {
+    this.nick = nick;
   }
 
-  /* To set the NickName after creation: */
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
+  // update the username
+  public void setUser(String user) {
+    this.user = user;
   }
 
-  /* To set the UserName after creation: */
-  public void setUsername(String username) {
-    this.username = username;
+  // update the hostname
+  public void setHost(String host) {
+    this.host = host;
   }
 
-  /* To set the HostName after creation: */
-  public void setHostname(String hostname) {
-    this.hostname = hostname;
-  }
-
-  /* To set the Information after creation: */
-  public void setInformation(String information) {
-    this.information = information;
-  }
-
-  /* To return the NickName: */
+  // get the nickname
   public String nick() {
-    return this.nickname;
+    return this.nick;
   }
 
-  /* To return the UserName: */
+  // get the username
   public String user() {
-    return this.username;
+    return this.user;
   }
 
-  /* To return the HostName: */
+  // get the hostname
   public String host() {
-    return this.hostname;
+    return this.host;
   }
 
-  /* To return the Full Address: */
+  // get the full address
   public String address() {
-    return this.nickname + "!" + this.username + "@" + this.hostname;
+    return this.nick + "!" + this.user + "@" + this.host;
   }
 
-  /* To return the Information: */
-  public String info() {
-    return this.information;
-  }
-
-  /* Print a short information string: */
+  // output a friendly string
   public String toString() {
-    return this.nickname + ", " + this.username + ", " + this.hostname + ", " + this.information;
+    return this.nick + ", " + this.user + ", " + this.host;
   }
 }

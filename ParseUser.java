@@ -3,12 +3,12 @@ import java.lang.String;
 
 public class ParseUser {
   // Difine the Variables needed;
-  private String from, nick, ident, host, cmd, chan, text;
+  private String from, nick, ident, host, cmd, target, text;
 
   // Default constructor when data is passed
   public ParseUser(String read_data) {
     // Create an Array to work from and processing Variables
-    List arg = new ArrayList();
+    ArrayList<String> arg = new ArrayList<String>();
     String arrRead_data[] = read_data.substring(1, read_data.length()).split(" ");
     String tmpLast = "";
     boolean isLast = false;
@@ -31,7 +31,7 @@ public class ParseUser {
 
     this.from = (String) arg.get(0);
     this.cmd = (String) arg.get(1);
-    this.chan = (String) arg.get(2);
+    this.target = (String) arg.get(2).trim();
     this.text = (String) arg.get(arg.size() - 1);
     if (this.text.length() > 0) {
       this.text = this.text.substring(1, this.text.length());
@@ -45,6 +45,10 @@ public class ParseUser {
 
   public String nick() {
     return this.nick;
+  }
+
+  public String target() {
+    return this.target;
   }
 
   public String ident() {
@@ -71,11 +75,16 @@ public class ParseUser {
   public String text(int first, int last) {
     String tmpText[] = this.text.split(" ");
     String tmpReturn = "";
+
+    if (tmpText.length < first) {
+      return "";
+    }
+    
     for (int i = first; i <= last; i++) {
       tmpReturn += " " + tmpText[i];
     }
 
-    return tmpReturn.substring(1, tmpReturn.length());
+    return tmpReturn.trim();
   }
 
   public int textSize() {

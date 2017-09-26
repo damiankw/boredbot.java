@@ -1,17 +1,17 @@
 /* Private Class for a Channel User: */
 public class ChanUser {
   /* Define the Variables needed: */
-  private String nickname, mode;
+  private String nick, mode;
 
   /* The Default Constructor: */
-  public ChanUser(String nickname, String mode) {
-    this.nickname = nickname;
+  public ChanUser(String nick, String mode) {
+    this.nick = nick;
     this.mode = mode;
   }
 
   /* To return the Nickname: */
   public String nick() {
-    return this.nickname;
+    return this.nick;
   }
 
   /* To return the Mode: */
