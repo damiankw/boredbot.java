@@ -23,6 +23,10 @@ public class Util {
     return "n/a";
   }
   
+  public static String lrange(String text, int first) {
+    return Util.lrange(text, first, -1);
+  }
+  
   public static String lrange(String text, int first, int last) {
     String txt[] = text.split(" ");
 
@@ -47,4 +51,55 @@ public class Util {
     
     return output.trim();
   }
+  
+  public static String trimLeft(String text, char chr) {
+    if (text.equals("")) {
+      return text;
+    }
+    
+    int i = 0;
+    while (text.charAt(i) == chr) {
+      i++;
+    }
+    
+    return text.substring(i);
+  }
+  
+  public static String trimRight(String text, char chr) {
+    if (text.equals("")) {
+      return text;
+    }
+    
+    int i = text.length() - 1;
+    while (text.charAt(i) == chr) {
+      i--;
+    }
+    
+    return text.substring(0, i + 1);
+  }
+  
+  public static String getNickFromAddress(String address) {
+    return Util.trimLeft(address, ':').split("!")[0];
+  }
+
+  public static String getUserFromAddress(String address) {
+    return address.split("!")[1].split("@")[0];
+  }
+
+  public static String getHostFromAddress(String address) {
+    return address.split("@")[1];
+  }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+

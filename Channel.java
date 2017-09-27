@@ -4,20 +4,22 @@ import java.util.*;
 
 public class Channel {
   private String name, topic, topicBy, mode;
-  private long created, topicWhen;
+  private long joined, created, topicWhen;
   private ArrayList<ChanUser> users = new ArrayList<ChanUser>();
 
-  /* Default Constructor: */
+  // set up default values on creation
   public Channel(String name) {
+    Date date = new Date();
+    
     this.name = name;
     this.topic = "";
     this.mode = "+";
     this.created = 0;
     this.topicBy = "";
     this.topicWhen = 0;
+    this.joined = date.getTime() / 1000;
   }
 
-  /* To set the Topic after creation: */
   public void setTopic(String topic) {
     this.topic = topic;
   }
@@ -30,7 +32,6 @@ public class Channel {
     this.topicWhen = date;
   }
 
-  /* To set the Mode after creation: */
   public void setMode(String mode) {
     this.mode = mode;
   }
@@ -39,59 +40,73 @@ public class Channel {
     this.created = created;
   }
 
-  // add a user to the list
-  public void addUser(String nick, String mode) {
-    // remove the nickname if it already exists (though we want to keep join time?)
-    this.delUser(nick);
-    
-    /* Add in the new Nickname to the Channel: */
-    this.users.add(new ChanUser(nick, mode));
-  }
-
-  /* To remove a Nickname from the List: */
-  public void delUser(String nick) {
-    /* Remove any old Nicknames of the same name from the channel: */
-    for (int i = this.users.size(); i > 0; i--) {
-      ChanUser tmpChanUser = (ChanUser) this.users.get(i - 1);
-      if (tmpChanUser.nick().equalsIgnoreCase(nick)) {
-        this.users.remove(i - 1);
-      }
-    }
-  }
-
-  /* To return a Channel Name: */
+  
+  // return the channel name
   public String name() {
     return this.name;
   }
 
-  /* To return the Channel Topic: */
+  // return the current topic
   public String topic() {
     return this.topic;
   }
 
+  // return who last changed the topic
   public String topicBy() {
     return this.topicBy;
   }
 
+  // return when the topic was last updated
   public long topicWhen() {
     return this.topicWhen;
   }
 
-  /* To return the Channel Mode: */
+  // return the current mode
   public String mode() {
     return this.mode;
   }
 
+  // return the channel creation date
   public long created() {
     return this.created;
+  }
+  
+  // return when the bot joined the channel
+  public long joined() {
+    return this.joined;
+  }
+
+  
+  
+  
+  
+
+  // add a user to the channel
+  public void addUser(String nick) {
+    this.addUser(nick, "");
+  }
+  
+  public void addUser(String nick, String mode) {
+    if (this.findUser(nick) != null) {
+      // update the info if already found
+      this.findUser(nick).setNick(nick);
+      this.findUser(nick).setMode(mode);
+    } else {
+      // create new user otherwise
+      this.users.add(new ChanUser(nick, mode));
+    }
+  }
+
+  // delete a user from the channel
+  public void delUser(String nick) {
+    this.users.remove(this.findUser(nick));
   }
 
   /* To find a Nickname in the List: */
   public ChanUser findUser(String nick) {
     for (int i = 0; i < this.users.size(); i++) {
-      ChanUser tmpChanUser = (ChanUser) this.users.get(i);
-      if (tmpChanUser.nick().equalsIgnoreCase(nick)) {
-        return tmpChanUser;
+      if (this.users.get(i).nick().equalsIgnoreCase(nick)) {
+        return this.users.get(i);
       }
     }
 
@@ -100,12 +115,16 @@ public class Channel {
 
   /* To list all Nicknames in the List as an Array: */
   public ChanUser[] listUser() {
-    ChanUser user[] = new ChanUser[this.users.size()];
+    ChanUser users[] = new ChanUser[this.users.size()];
     for (int i = 0; i < this.users.size(); i++) {
-      user[i] = (ChanUser) this.users.get(i);
+      users[i] = (ChanUser) this.users.get(i);
     }
 
-    return user;
+    return users;
+  }
+  
+  public int countUser() {
+    return this.users.size();
   }
 
   /* To list all Nicknames in the List as a String: */

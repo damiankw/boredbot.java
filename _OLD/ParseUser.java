@@ -9,6 +9,7 @@ public class ParseUser {
 
   // Default constructor when data is passed
   public ParseUser(String read_data) {
+    System.out.println("<- " + read_data);
     // Create an Array to work from and processing Variables
     ArrayList<String> arg = new ArrayList<String>();
     String arrRead_data[] = read_data.substring(1, read_data.length()).split(" ");

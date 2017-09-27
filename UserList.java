@@ -41,7 +41,7 @@ public class UserList {
   }
   
   // search for a user in the list by nickname
-  public User find(String nickname) {
+  public User get(String nickname) {
     // loop through all users
     for (int i = 0; i < this.UserList.size(); i++) {
       // check if the user exists

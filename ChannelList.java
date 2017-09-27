@@ -2,40 +2,40 @@ package net.nictitate.boredBOT;
 
 import java.util.*;
 
-public class ChanList {
+public class ChannelList {
   /* The array to hold the list of Channels: */
-  private ArrayList<Channel> chans = new ArrayList<Channel>();
+  private ArrayList<Channel> channels = new ArrayList<Channel>();
 
   /* Default Constructor: */
-  public ChanList() { }
+  public ChannelList() { }
 
   /* To add a new Channel: */
   public void add(String chan) {
-    if (this.find(chan) == null) {
-      this.chans.add(new Channel(chan));
+    if (this.get(chan) == null) {
+      this.channels.add(new Channel(chan));
     }
   }
 
   public void add(Channel chan) {
-    if (this.find(chan.name()) == null) {
-      this.chans.add(chan);
+    if (this.get(chan.name()) == null) {
+      this.channels.add(chan);
     }
   }
 
   /* To remove an old Channel: */
   public void del(String chan) {
-    for (int i = this.chans.size(); i > 0; i--) {
-      Channel tmpChan = (Channel) this.chans.get(i - 1);
+    for (int i = this.channels.size(); i > 0; i--) {
+      Channel tmpChan = (Channel) this.channels.get(i - 1);
       if (tmpChan.name().equalsIgnoreCase(chan)) {
-        this.chans.remove(i - 1);
+        this.channels.remove(i - 1);
       }
     }
   }
-
+  
   /* To find a Channel: */
-  public Channel find(String chan) {
-    for (int i = 0; i < this.chans.size(); i++) {
-      Channel tmpChan = (Channel) this.chans.get(i);
+  public Channel get(String chan) {
+    for (int i = 0; i < this.channels.size(); i++) {
+      Channel tmpChan = (Channel) this.channels.get(i);
       if (tmpChan.name().equalsIgnoreCase(chan)) {
         return tmpChan;
       }
@@ -53,23 +53,23 @@ public class ChanList {
 
   /* To list all Channels as an Array: */
   public Channel[] list() {
-    Channel chan[] = new Channel[this.chans.size()];
-    for (int i = 0; i < this.chans.size(); i++) {
-      chan[i] = (Channel) this.chans.get(i);
+    Channel chan[] = new Channel[this.channels.size()];
+    for (int i = 0; i < this.channels.size(); i++) {
+      chan[i] = (Channel) this.channels.get(i);
     }
 
     return chan;
   }
 
   public int total() {
-    return this.chans.size();
+    return this.channels.size();
   }
   
   /* To list all Users as a String: */
   public String toString() {
     String tmpReturn = "";
-    for (int i = 0; i < this.chans.size(); i++) {
-      Channel tmpChan = (Channel) this.chans.get(i);
+    for (int i = 0; i < this.channels.size(); i++) {
+      Channel tmpChan = (Channel) this.channels.get(i);
       tmpReturn += " " + tmpChan.name();
     }
 

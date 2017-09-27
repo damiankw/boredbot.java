@@ -54,8 +54,12 @@ public class User {
   }
 
   // get the full address
-  public String address() {
+  public String fulladdress() {
     return this.nick + "!" + this.user + "@" + this.host;
+  }
+  
+  public String address() {
+    return this.user + "@" + this.host;
   }
 
   // output a friendly string
